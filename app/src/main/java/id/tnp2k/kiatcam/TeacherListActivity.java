@@ -48,23 +48,12 @@ public class TeacherListActivity extends Activity {
 
         // ListView Item Click Listener
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-
-                // ListView Clicked item index
-                int itemPosition     = position;
-
-                // ListView Clicked item value
                 String  itemValue    = (String) listView.getItemAtPosition(position);
                 currentTeacher = itemValue;
                 TakePhoto(view);
-                /*
-                // Show Alert
-                Toast.makeText(getApplicationContext(),
-                        "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
-                        .show();*/
             }
 
         });
@@ -75,7 +64,12 @@ public class TeacherListActivity extends Activity {
         Intent intent = new Intent(this, CameraActivity.class);
         Bundle b  = new Bundle();
         b.putString("current",currentTeacher);
-        intent.putExtras(b);
+        if (intent.getExtras() == null) {
+            intent.putExtras(b);
+        } else {
+            intent.replaceExtras(b);
+        }
+
         startActivityForResult(intent,TAKE_PHOTO_REQ);
         // Do something in response to button
     }
