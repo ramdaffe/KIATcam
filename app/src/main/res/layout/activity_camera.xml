@@ -4,12 +4,26 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
+
+    <TextView
+        android:layout_width="382dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="current teacher"
+        android:id="@+id/TeacherCaption"
+        android:visibility="visible"
+        android:textSize="24dp"
+        android:textColor="#ffffffff"
+        android:background="#ff272596" />
+
     <FrameLayout
         android:id="@+id/camera_preview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
-        />
+        >
+
+    </FrameLayout>
 
     <LinearLayout
         android:orientation="horizontal"

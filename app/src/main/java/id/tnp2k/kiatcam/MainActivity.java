@@ -16,7 +16,7 @@ public class MainActivity extends Activity {
 
     private Camera mCamera;
     private CameraPreview mCameraPreview;
-    private static final int TAKE_PHOTO_REQ = 100;
+    //private static final int TAKE_PHOTO_REQ = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +26,11 @@ public class MainActivity extends Activity {
 
 
     public void ChooseTeacher(View view) {
-        Intent intent = new Intent(this, CameraActivity.class);
-        startActivityForResult(intent,TAKE_PHOTO_REQ);
+        Intent intent = new Intent(this, TeacherListActivity.class);
+        startActivity(intent);
         // Do something in response to button
     }
+    /*
     private Camera getCameraInstance() {
         Camera camera = null;
 
@@ -39,7 +40,7 @@ public class MainActivity extends Activity {
             // cannot get camera or does not exist
         }
         return camera;
-    }
+    }*/
 
 
     @Override

@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 
 public class CameraActivity extends Activity {
@@ -23,10 +24,11 @@ public class CameraActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_camera);
-
+        TextView text=(TextView)findViewById(R.id.TeacherCaption);
+        Bundle b = getIntent().getExtras();
+        text.setText(b.getString("current")); //set teacher name
         mCamera = getCameraInstance();
         mCameraPreview = new CameraPreview(this, mCamera);
-
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mCameraPreview);
     }
