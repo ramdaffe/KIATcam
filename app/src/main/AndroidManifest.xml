@@ -31,6 +31,10 @@
             android:name="id.tnp2k.kiatcam.TeacherListActivity"
             android:label="@string/title_activity_teacher_list" >
         </activity>
+        <activity
+            android:name="id.tnp2k.kiatcam.PreviewActivity"
+            android:label="@string/title_activity_preview" >
+        </activity>
     </application>
 
 </manifest>

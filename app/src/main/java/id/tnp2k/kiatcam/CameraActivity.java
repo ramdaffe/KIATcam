@@ -1,8 +1,8 @@
 package id.tnp2k.kiatcam;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
+import android.graphics.*;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.net.Uri;
@@ -14,10 +14,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.media.ExifInterface;
+
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,11 +34,46 @@ public class CameraActivity extends Activity {
 
     private Camera mCamera;
     private CameraPreview mCameraPreview;
+
+    private byte[] mCameraData;
     private Bitmap mCameraBitmap;
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
     private String curTeacher;
+    private boolean mIsCapturing;
+    public static final String EXTRA_CAMERA_DATA = "camera_data";
+    static final int DONE_CAMERA = 99;
 
+
+    private OnClickListener mCaptureButtonClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            // get an image from the camera
+            mCamera.takePicture(null, null, mPicture);
+
+        }
+    };
+
+    public void DonePhoto() {
+        if (mCameraData != null) {
+            Intent intent = new Intent(this,PreviewActivity.class);
+            intent.putExtra(EXTRA_CAMERA_DATA, mCameraData);
+            setResult(RESULT_OK, intent);
+            startActivityForResult(intent,DONE_CAMERA);
+            finish();
+        } else {
+            setResult(RESULT_CANCELED);
+        }
+
+    }
+
+    private OnClickListener mBackButtonClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            // kill activity
+            CameraActivity.this.finish();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,26 +90,11 @@ public class CameraActivity extends Activity {
         mCameraPreview = new CameraPreview(this, mCamera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mCameraPreview);
+        mIsCapturing = true;
         Button captureButton = (Button) findViewById(R.id.button_capture);
-        captureButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // get an image from the camera
-                        mCamera.takePicture(null, null, mPicture);
-                    }
-                }
-        );
+        captureButton.setOnClickListener(mCaptureButtonClickListener);
         Button backButton = (Button) findViewById(R.id.button_back);
-        backButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // kill activity
-                        CameraActivity.this.finish();
-                    }
-                }
-        );
+        backButton.setOnClickListener(mBackButtonClickListener);
     }
 
     private Camera getCameraInstance() {
@@ -124,28 +147,36 @@ public class CameraActivity extends Activity {
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
+            mCameraData = data;
+            //Bitmap bitmap = BitmapFactory.decodeByteArray(mCameraData,0,mCameraData.length);
+            DonePhoto();
+            //mCamera.stopPreview();
+            /*
             File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-            if (pictureFile == null){/*
+            if (pictureFile == null){
                 Log.d(TAG, "Error creating media file, check storage permissions: " +
-                        e.getMessage());*/
+                        e.getMessage());
                 return;
             }
 
             try {
                 FileOutputStream fos = new FileOutputStream(pictureFile);
+                // Reset the stream of 'output' for output writing.
+                // Compress current 'Bitmap' to 'output' as JPEG format
+                //bmp.compress(Bitmap.CompressFormat.JPEG, 95, fos);
                 //mCameraBitmap.compress(Bitmap.CompressFormat.JPEG, 50, fos);
-                //fos.write(data);
-                fos.flush();
+                fos.write(data);
+                //fos.flush();
                 fos.close();
                 ExifInterface exifInt = new ExifInterface(pictureFile.getAbsolutePath()); //try exif
                 exifInt.setAttribute("UserComment",curTeacher);
                 exifInt.saveAttributes();
                 mCamera.startPreview();
             } catch (FileNotFoundException e) {
-                /*Log.d(TAG, "File not found: " + e.getMessage());*/
+                //Log.d(TAG, "File not found: " + e.getMessage());
             } catch (IOException e) {
-                /*Log.d(TAG, "Error accessing file: " + e.getMessage());*/
-            }
+                //Log.d(TAG, "Error accessing file: " + e.getMessage());
+            }*/
 
         }
     };
@@ -153,43 +184,9 @@ public class CameraActivity extends Activity {
 
 
     /** Create a file Uri for saving an image or video */
-    private static Uri getOutputMediaFileUri(int type){
-        return Uri.fromFile(getOutputMediaFile(type));
-    }
+
 
     /** Create a File for saving an image or video */
-    private static File getOutputMediaFile(int type){
-        // To be safe, you should check that the SDCard is mounted
-        // using Environment.getExternalStorageState() before doing this.
 
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "KIATcam");
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
-
-        // Create the storage directory if it does not exist
-        if (! mediaStorageDir.exists()){
-            if (! mediaStorageDir.mkdirs()){
-                Log.d("KIATcam", "failed to create directory");
-                return null;
-            }
-        }
-
-        // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File mediaFile;
-        if (type == MEDIA_TYPE_IMAGE){
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "IMG_"+ timeStamp + ".jpg");
-
-        } else if(type == MEDIA_TYPE_VIDEO) {
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "VID_"+ timeStamp + ".mp4");
-        } else {
-            return null;
-        }
-
-        return mediaFile;
-    }
 
 }
