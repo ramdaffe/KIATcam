@@ -1,6 +1,8 @@
 package id.tnp2k.kiatcam;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.net.Uri;
@@ -15,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.media.ExifInterface;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,8 +31,10 @@ public class CameraActivity extends Activity {
 
     private Camera mCamera;
     private CameraPreview mCameraPreview;
+    private Bitmap mCameraBitmap;
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
+    private String curTeacher;
 
 
     @Override
@@ -41,7 +46,8 @@ public class CameraActivity extends Activity {
         setContentView(R.layout.activity_camera);
         TextView text=(TextView)findViewById(R.id.TeacherCaption);
         Bundle b = getIntent().getExtras();
-        text.setText(b.getString("current")); //set teacher name
+        curTeacher = b.getString("current");
+        text.setText(curTeacher); //set teacher name
         mCamera = getCameraInstance();
         mCameraPreview = new CameraPreview(this, mCamera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
@@ -53,6 +59,16 @@ public class CameraActivity extends Activity {
                     public void onClick(View v) {
                         // get an image from the camera
                         mCamera.takePicture(null, null, mPicture);
+                    }
+                }
+        );
+        Button backButton = (Button) findViewById(R.id.button_back);
+        backButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // kill activity
+                        CameraActivity.this.finish();
                     }
                 }
         );
@@ -117,15 +133,25 @@ public class CameraActivity extends Activity {
 
             try {
                 FileOutputStream fos = new FileOutputStream(pictureFile);
-                fos.write(data);
+                //mCameraBitmap.compress(Bitmap.CompressFormat.JPEG, 50, fos);
+                //fos.write(data);
+                fos.flush();
                 fos.close();
+                ExifInterface exifInt = new ExifInterface(pictureFile.getAbsolutePath()); //try exif
+                exifInt.setAttribute("UserComment",curTeacher);
+                exifInt.saveAttributes();
+                mCamera.startPreview();
             } catch (FileNotFoundException e) {
                 /*Log.d(TAG, "File not found: " + e.getMessage());*/
             } catch (IOException e) {
                 /*Log.d(TAG, "Error accessing file: " + e.getMessage());*/
             }
+
         }
     };
+
+
+
     /** Create a file Uri for saving an image or video */
     private static Uri getOutputMediaFileUri(int type){
         return Uri.fromFile(getOutputMediaFile(type));
@@ -155,6 +181,7 @@ public class CameraActivity extends Activity {
         if (type == MEDIA_TYPE_IMAGE){
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
                     "IMG_"+ timeStamp + ".jpg");
+
         } else if(type == MEDIA_TYPE_VIDEO) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
                     "VID_"+ timeStamp + ".mp4");
