@@ -58,6 +58,7 @@ public class PreviewActivity extends Activity {
 
         }
     };
+    /*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == DONE_CAMERA) {
@@ -77,7 +78,7 @@ public class PreviewActivity extends Activity {
                 mCameraBitmap = null;
             }
         }
-    }
+    }*/
 
 
     @Override

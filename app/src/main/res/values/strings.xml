@@ -10,5 +10,7 @@
     <string name="title_activity_camera">Ambil Foto</string>
     <string name="title_activity_teacher_list">Pilih Nama Guru</string>
     <string name="title_activity_preview">PreviewActivity</string>
+    <string name="title_activity_finish">FinishActivity</string>
+    <string name="title_activity_teacher_list_activity2">TeacherListActivity2</string>
 
 </resources>

@@ -8,6 +8,7 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:allowBackup="true"
@@ -34,6 +35,14 @@
         <activity
             android:name="id.tnp2k.kiatcam.PreviewActivity"
             android:label="@string/title_activity_preview" >
+        </activity>
+        <activity
+            android:name="id.tnp2k.kiatcam.FinishActivity"
+            android:label="Foto selesai" >
+        </activity>
+        <activity
+            android:name="id.tnp2k.kiatcam.TeacherListActivity2"
+            android:label="@string/title_activity_teacher_list_activity2" >
         </activity>
     </application>
 
