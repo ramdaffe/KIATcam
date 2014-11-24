@@ -19,6 +19,15 @@
         android:textStyle="bold"
         android:textColor="#ffffffff" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TEST VERSION 0.1"
+        android:id="@+id/textView2"
+        android:layout_gravity="center_horizontal"
+        android:textSize="15dp"
+        android:textColor="#ffffffff" />
+
     <Space
         android:layout_width="match_parent"
         android:layout_height="200dp"

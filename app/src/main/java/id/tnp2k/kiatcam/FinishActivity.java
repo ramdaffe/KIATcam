@@ -34,7 +34,7 @@ public class FinishActivity extends Activity {
                 }
         );
 
-        new CountDownTimer(4000, 1000) {
+        new CountDownTimer(3000, 1000) {
 
             public void onTick(long millisUntilFinished) {
             }

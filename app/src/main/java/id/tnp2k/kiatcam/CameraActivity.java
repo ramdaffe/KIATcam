@@ -78,6 +78,7 @@ public class CameraActivity extends Activity {
         int rotate = (info.orientation - degrees + 360) % 360;
         Camera.Parameters params = mCamera.getParameters();
         params.setRotation(rotate);
+        params.setJpegQuality(70);
         mCamera.setParameters(params);
         Button captureButton = (Button) findViewById(R.id.button_capture);
         captureButton.setOnClickListener(
@@ -202,31 +203,26 @@ public class CameraActivity extends Activity {
     private static File getOutputMediaFile(int type){
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
-
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "KIATcam");
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
-
-        // Create the storage directory if it does not exist
+        String timeStamp = new SimpleDateFormat("HHmm").format(new Date());
+        Calendar c = Calendar.getInstance();
+        int tanggal = c.get(Calendar.DATE);
+        int bulan = c.get(Calendar.MONTH);
+        String path = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES).getAbsolutePath() + "/KIATcam/" + curTeacher + "/" + bulan + "/";
+        File mediaStorageDir = new File(path, Integer.toString(tanggal));
         if (! mediaStorageDir.exists()){
             if (! mediaStorageDir.mkdirs()){
                 Log.d("KIATcam", "failed to create directory");
                 return null;
             }
         }
-
         // Create a media file name
-        String timeStamp = new SimpleDateFormat("HHmmss").format(new Date());
-        //String  = new SimpleDateFormat("DD").format(new Date());
-        Calendar c = Calendar.getInstance();
-        int tanggal = c.get(Calendar.DATE);
-        int bulan = c.get(Calendar.MONTH);
-        String path = File.separator + "var" + File.separator + "temp";
+
+        //String path = File.separator + "var" + File.separator + "temp";
         File mediaFile;
         if (type == MEDIA_TYPE_IMAGE){
             String photopath = mediaStorageDir.getPath();
-            mediaFile = new File(photopath + File.separator + "KIAT_"+ timeStamp + ".jpg");
+            mediaFile = new File(photopath + File.separator + curTeacher + "-" + bulan + "-" + tanggal + "-" + timeStamp + ".jpg");
 
         } else if(type == MEDIA_TYPE_VIDEO) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
